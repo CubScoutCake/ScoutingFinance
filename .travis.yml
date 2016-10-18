@@ -1,8 +1,22 @@
 language: php
+
+sudo: required
+
 php:
-  - '7.0'
-  
-composer install
+  - 7.0
+
+env: DB=mysql
 
 services:
   - mysql
+
+before_script:
+  - composer install
+  - composer update
+
+notifications:
+  email: true
+
+addons:
+    code_climate:
+        repo_token: CodeClimateTokenForReplacement
