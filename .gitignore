@@ -17,6 +17,8 @@
 /logs/*
 !/logs/empty
 
+!/vendor/autoload.php
+
 .idea/
 
 composer.phar
