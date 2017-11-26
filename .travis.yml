@@ -1,11 +1,43 @@
 language: php
 
-sudo: required
+dist: trusty
+
+sudo: false
 
 php:
-  - 7.0
+  - 7.1
 
-env: DB=mysql
+env:
+  - DB=postgres
 
 services:
-  - mysql
+  - postgres
+
+matrix:
+  fast_finish: true
+
+  include:
+    - php: 7.1
+      env: PHPCS=1
+
+before_script:
+  - composer install
+  - composer run-script post-install-cmd --no-interaction
+  - psql -c 'create database cake;' -U postgres
+  - sh -c "bin/cake migrations migrate"
+#  - sh -c "bin/cake database seed"
+
+script:
+  - if [[ $PHPCS = 1 ]]; then composer cs-check; fi
+  - composer test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - vendor/bin/test-reporter
+
+notifications:
+  email: false
+
+addons:
+    code_climate:
+        repo_token: CodeClimateTokenForReplacement
